@@ -2,99 +2,43 @@
 <html lang="fa">
 <head>
     <meta charset="UTF-8">
-    <title>پروکسی گیت‌هاب</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پروکسی پل گیت‌هاب</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 20px;
-            background: #0d1117;
-            color: #c9d1d9;
-        }
-        .container {
-            background: #161b22;
-            padding: 30px;
-            border-radius: 10px;
-            border: 1px solid #30363d;
-        }
-        h1 {
-            color: #58a6ff;
-        }
-        input {
-            width: 100%;
-            padding: 12px;
-            font-size: 16px;
-            background: #0d1117;
-            border: 1px solid #30363d;
-            color: white;
-            border-radius: 6px;
-            margin: 10px 0;
-            box-sizing: border-box;
-        }
-        button {
-            background: #238636;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            font-size: 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            width: 100%;
-        }
-        button:hover {
-            background: #2ea043;
-        }
-        iframe {
-            width: 100%;
-            height: 500px;
-            border: 1px solid #30363d;
-            border-radius: 8px;
-            margin-top: 20px;
-            background: white;
-        }
-        .note {
-            font-size: 12px;
-            color: #8b949e;
-            margin-top: 15px;
-            text-align: center;
-        }
+        body { font-family: Tahoma, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; background: #0d1117; color: #c9d1d9; }
+        .container { background: #161b22; padding: 30px; border-radius: 10px; border: 1px solid #30363d; }
+        input, button { width: 100%; padding: 12px; margin: 10px 0; border-radius: 6px; border: 1px solid #30363d; background: #0d1117; color: white; font-size: 16px; }
+        button { background: #238636; cursor: pointer; }
+        button:hover { background: #2ea043; }
+        iframe { width: 100%; height: 500px; border: 1px solid #30363d; border-radius: 8px; margin-top: 20px; background: white; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌐 پروکسی گیت‌هاب</h1>
-        <p>آدرس سایت مورد نظر را وارد کنید:</p>
-        <input type="text" id="urlInput" placeholder="مثال: https://youtube.com">
-        <button onclick="loadSite()">نمایش سایت</button>
-        <iframe id="siteFrame" src="about:blank"></iframe>
-        <div class="note">
-            ⚠️ توجه: این پروکسی فقط برای وبگردی ساده مناسب است. برای ورود به حساب‌های شخصی استفاده نکنید.
-        </div>
-    </div>
-
-    <script>
-        function loadSite() {
-            let url = document.getElementById('urlInput').value;
-            if (!url.startsWith('http')) {
-                url = 'https://' + url;
-            }
-            // استفاده از سرویس allorigins به عنوان پروکسی
-            const proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent(url);
-            
-            fetch(proxyUrl)
-                .then(response => response.json())
-                .then(data => {
-                    const iframe = document.getElementById('siteFrame');
-                    const doc = iframe.contentDocument || iframe.contentWindow.document;
-                    doc.open();
-                    doc.write(data.contents);
-                    doc.close();
-                })
-                .catch(error => {
-                    alert('خطا در بارگذاری سایت: ' + error);
-                });
+<div class="container">
+    <h2>🌉 پل گیت‌هاب (بدون نرم‌افزار)</h2>
+    <p>آدرس سایت مورد نظر را وارد کنید:</p>
+    <input type="text" id="url" placeholder="مثال: https://youtube.com">
+    <button onclick="proxyRequest()">باز کردن پل</button>
+    <iframe id="frame" src="about:blank"></iframe>
+    <p style="font-size: 12px; color: #8b949e;">⚠️ این روش فقط برای وبگردی و تماشای ویدیو مناسب است.</p>
+</div>
+<script>
+    async function proxyRequest() {
+        let targetUrl = document.getElementById('url').value;
+        if (!targetUrl.startsWith('http')) targetUrl = 'https://' + targetUrl;
+        const frame = document.getElementById('frame');
+        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
+        try {
+            const response = await fetch(proxyUrl);
+            const data = await response.json();
+            const doc = frame.contentWindow.document;
+            doc.open();
+            doc.write(data.contents);
+            doc.close();
+        } catch (err) {
+            frame.srcdoc = `<html><body style="color:red;padding:20px;">خطا: ${err.message}<br>سایت ممکن است درخواست را رد کرده باشد.</body></html>`;
         }
-    </script>
+    }
+</script>
 </body>
 </html>
