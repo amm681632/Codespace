@@ -23,6 +23,12 @@
     <p style="font-size: 12px; color: #8b949e;">⚠️ این روش فقط برای وبگردی و تماشای ویدیو مناسب است.</p>
 </div>
 <script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/Codespace/sw.js').then(reg => {
+            console.log('✅ پل گیت‌هاب نصب شد!');
+        }).catch(err => console.log('❌ خطا:', err));
+    }
+
     async function proxyRequest() {
         let targetUrl = document.getElementById('url').value;
         if (!targetUrl.startsWith('http')) targetUrl = 'https://' + targetUrl;
